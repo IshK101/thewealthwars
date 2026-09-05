@@ -3,7 +3,7 @@ services:
     name: wealth-wars-game
     runtime: node
     plan: free
-    rootDir: WealthWars-Deploy
+    rootDir: WealthWars-Deploy 3
     buildCommand: npm run build
     startCommand: npm start
     healthCheckPath: /health
