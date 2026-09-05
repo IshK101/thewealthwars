@@ -1,0 +1,968 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wealth Wars — Behavioral Capital Lab</title>
+    <!-- Modern Google Fonts: Sora for Headings, Inter for Body and Numbers -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <meta name="description" content="Wealth Wars — A multiplayer investing game about markets, social influence, evidence and long-term judgment." />
+  </head>
+  <body>
+    <div id="app">
+      <!-- SCREEN 1: REGISTRATION / LOGIN -->
+      <section id="screen-register" class="screen active">
+        <div class="auth-card">
+          <div class="brand-badge">
+            <div class="brand-logo-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <span class="brand-tag">BEHAVIORAL CAPITAL LAB</span>
+          </div>
+          <h1 class="auth-title">WEALTH WARS</h1>
+          <p class="auth-subtitle">Navigate markets, social pressure and the long-term consequences of every choice.</p>
+          <div class="game-at-a-glance" aria-label="Game summary">
+            <span><strong>2–4</strong> players</span>
+            <span><strong>20</strong> rounds</span>
+            <span><strong>1</strong> healthiest portfolio wins</span>
+          </div>
+
+          <div class="auth-form">
+            <div class="input-field-group">
+              <label for="username">Player Identity</label>
+              <input type="text" id="username" placeholder="Enter your executive name..." maxlength="16" autofocus />
+            </div>
+            <button id="btn-login" class="btn btn-primary btn-block">
+              <span>Enter Game Lobby</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </button>
+            <button class="btn btn-secondary btn-block btn-open-guide" type="button" aria-haspopup="dialog">
+              <span>How to Play</span>
+              <span aria-hidden="true">?</span>
+            </button>
+          </div>
+          
+          <div class="auth-features">
+            <div class="feature-item">
+              <span class="f-icon">📈</span>
+              <span>Dynamic Market</span>
+            </div>
+            <div class="feature-item">
+              <span class="f-icon">🏢</span>
+              <span>Live Influence Pattern</span>
+            </div>
+            <div class="feature-item">
+              <span class="f-icon">⚡</span>
+              <span>Decision Ripples</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: LOBBIES BROWSER -->
+      <section id="screen-lobbies" class="screen">
+        <header class="app-sub-header">
+          <div class="brand-row">
+            <div class="brand-logo-small">WW</div>
+            <h2 class="section-heading">Lobby Headquarters</h2>
+          </div>
+          <div class="sub-header-actions">
+            <button class="btn btn-secondary btn-sm btn-open-guide" type="button" aria-haspopup="dialog">Game Guide</button>
+            <div class="user-pill">
+              <span class="status-indicator"></span>
+              <span class="user-label">Executive:</span>
+              <strong id="lbl-my-name">...</strong>
+            </div>
+          </div>
+        </header>
+
+        <div class="lobby-grid">
+          <!-- Active Rooms Card -->
+          <div class="panel-card lobby-browser-card">
+            <div class="panel-card-header">
+              <div class="panel-title-wrap">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                <h3>Active Game Rooms</h3>
+              </div>
+              <button id="btn-refresh-lobbies" class="btn btn-ghost btn-sm" title="Refresh available rooms">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M23 4v6h-6M1 20v-6h6"></path>
+                  <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
+                </svg>
+                <span>Refresh</span>
+              </button>
+            </div>
+            <div id="lobbies-container" class="lobbies-list-scroll">
+              <div class="empty-state">
+                <p>No active rooms found. Create a new room to begin.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Create Room Card -->
+          <div class="panel-card create-room-card">
+            <div class="panel-card-header">
+              <div class="panel-title-wrap">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="16"></line>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+                <h3>Host a New Boardroom</h3>
+              </div>
+            </div>
+            <div class="create-room-body">
+              <div class="input-field-group">
+                <label for="lobby-name">Room Title</label>
+                <input type="text" id="lobby-name" placeholder="e.g. Wall Street Champions" maxlength="25" />
+              </div>
+              <p class="helper-text">Games support 2 to 4 players. Once hosted, invite your peers to join.</p>
+              <button id="btn-create-lobby" class="btn btn-primary btn-block">
+                <span>Create Boardroom</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: WAITING ROOM / INDUSTRY SELECTION -->
+      <section id="screen-room" class="screen">
+        <div class="waiting-room-layout">
+          <div class="panel-card room-details-card">
+            <div class="room-header-row">
+              <div>
+                <h2 id="room-title" class="room-title-text">Boardroom: ...</h2>
+                <div class="room-code-tag">Room ID: <strong id="lbl-room-id">...</strong></div>
+              </div>
+              <div class="room-capacity-badge">
+                <span class="count-now" id="lbl-room-count">1</span>
+                <span class="count-max">/ 4 Players</span>
+              </div>
+            </div>
+
+            <div class="room-players-section">
+              <h4>Registered Executives</h4>
+              <div id="room-players-list" class="room-players-grid">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Core financial strategy preview -->
+            <div class="industry-selection-section">
+              <h4>Build Financial Resilience</h4>
+              <div class="industry-cards-grid">
+                <div class="industry-card ind-tech">
+                  <div class="ind-icon-wrap">
+                    <span>💧</span>
+                  </div>
+                  <div class="ind-info">
+                    <span class="ind-name">Stay Liquid</span>
+                    <span class="ind-desc">Build an emergency fund before surprises arrive.</span>
+                  </div>
+                </div>
+                <div class="industry-card ind-consumer">
+                  <div class="ind-icon-wrap">
+                    <span>⏳</span>
+                  </div>
+                  <div class="ind-info">
+                    <span class="ind-name">Think Ahead</span>
+                    <span class="ind-desc">Every loan and opportunity can ripple into later turns.</span>
+                  </div>
+                </div>
+                <div class="industry-card ind-healthcare">
+                  <div class="ind-icon-wrap">
+                    <span>◫</span>
+                  </div>
+                  <div class="ind-info">
+                    <span class="ind-name">Diversify</span>
+                    <span class="ind-desc">Mix growth, funds, bonds and property as levels unlock.</span>
+                  </div>
+                </div>
+                <div class="industry-card ind-energy">
+                  <div class="ind-icon-wrap">
+                    <span>◎</span>
+                  </div>
+                  <div class="ind-info">
+                    <span class="ind-name">Win on Health</span>
+                    <span class="ind-desc">Wealth matters most, supported by liquidity, healthy debt and diversification.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="first-turn-primer" aria-label="First turn quick guide">
+              <strong>First game?</strong>
+              <span>Mark Ready</span><i>→</i><span>Roll</span><i>→</i><span>Resolve the tile</span><i>→</i><span>Invest or save</span><i>→</i><span>End Turn</span>
+            </div>
+
+            <div class="room-footer-actions">
+              <button class="btn btn-ghost btn-lg btn-open-guide" type="button" aria-haspopup="dialog">How to Play</button>
+              <button id="btn-ready" class="btn btn-secondary btn-lg" title="Confirm that you are ready to start">
+                <span>Mark Ready</span>
+              </button>
+              <button id="btn-start-game" class="btn btn-primary btn-lg" title="Host: start when at least two players are ready" disabled>
+                <span>Launch Boardroom</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+              </button>
+              <button id="btn-leave-room" class="btn btn-outline-danger" title="Leave this boardroom and return to the lobby">Leave Room</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 4: MAIN GAME SCREEN -->
+      <section id="screen-game" class="screen">
+        <!-- A. TOP MARKET BAR (Section 4.A) -->
+        <header id="top-market-bar" class="top-market-bar">
+          <!-- Logo & Brand -->
+          <div class="top-bar-brand">
+            <div class="brand-mark">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <span class="brand-title">WEALTH WARS</span>
+          </div>
+
+          <!-- Market Ticker with subtle animated backdrop line -->
+          <div class="market-ticker-container">
+            <div class="market-ticker-backdrop-line" id="ticker-sparkline"></div>
+            <div class="market-ticker-scroller" id="market-ticker-track">
+              <!-- Live Ticker Items -->
+              <div class="ticker-pill" id="pill-TECH">
+                <span class="ticker-sym">NOVA TECH</span>
+                <span class="ticker-price" id="val-price-TECH">$100</span>
+                <span class="ticker-change up" id="val-change-TECH">▲ 0.0%</span>
+              </div>
+              <div class="ticker-pill" id="pill-CONS">
+                <span class="ticker-sym">BALANCED FUND</span>
+                <span class="ticker-price" id="val-price-CONS">$80</span>
+                <span class="ticker-change up" id="val-change-CONS">▲ 0.0%</span>
+              </div>
+              <div class="ticker-pill" id="pill-HEAL">
+                <span class="ticker-sym">VITALIS HEAL</span>
+                <span class="ticker-price" id="val-price-HEAL">$120</span>
+                <span class="ticker-change down" id="val-change-HEAL">▼ 0.0%</span>
+              </div>
+              <div class="ticker-pill" id="pill-ENER">
+                <span class="ticker-sym">ENERGY INDEX</span>
+                <span class="ticker-price" id="val-price-ENER">$90</span>
+                <span class="ticker-change up" id="val-change-ENER">▲ 0.0%</span>
+              </div>
+              <div class="ticker-pill index-pill">
+                <span class="ticker-sym">10Y BOND</span>
+                <span class="ticker-price">4.36%</span>
+                <span class="ticker-change up">▲ 0.08%</span>
+              </div>
+              <div class="ticker-pill index-pill">
+                <span class="ticker-sym">GOLD</span>
+                <span class="ticker-price">$2,375</span>
+                <span class="ticker-change up">▲ 0.72%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Round & Phase Status Area -->
+          <div class="top-bar-status">
+            <!-- 20-Round Progression Dots -->
+            <div class="round-tracker-wrap">
+              <div class="round-label-row">
+                <span class="round-label">ROUND <strong id="lbl-round-num">1</strong> / 20</span>
+              </div>
+              <div class="round-dots-track" id="round-dots-container">
+                <!-- 20 small progression dots dynamically rendered -->
+              </div>
+            </div>
+
+            <!-- Inflation Counter -->
+            <div class="stat-badge inflation-badge">
+              <span class="badge-label">INFLATION</span>
+              <span class="badge-val" id="lbl-inflation">0%</span>
+            </div>
+            <div class="stat-badge economy-badge">
+              <span class="badge-label">ECONOMY</span>
+              <span class="badge-val" id="lbl-economy">NORMAL</span>
+            </div>
+
+            <!-- Active Player / Turn Phase Badge -->
+            <div class="active-player-pill" id="active-turn-indicator-pill">
+              <span class="active-pulse-dot"></span>
+              <span class="active-player-name" id="lbl-active-player">Alice's Turn</span>
+              <span class="phase-chip" id="lbl-phase-indicator">ROLL PHASE</span>
+            </div>
+
+            <!-- Controls (Sound / Help) -->
+            <div class="top-bar-controls">
+              <button id="btn-game-guide" class="icon-btn" type="button" title="Open game guide" aria-label="Open game guide">
+                <span class="help-icon" aria-hidden="true">?</span>
+              </button>
+              <button id="btn-sound-toggle" class="icon-btn" title="Toggle Sound FX">
+                <svg id="icon-sound-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                </svg>
+                <svg id="icon-sound-off" class="hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                  <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
+                  <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
+                  <line x1="12" y1="19" x2="12" y2="23"></line>
+                  <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- MAIN 3-COLUMN GAMEPLAY VIEWPORT (Section 4.B, 4.C, 4.D) -->
+        <main class="game-viewport">
+          <!-- B. LEFT PLAYER STANDINGS PANEL (Section 4.B) -->
+          <aside class="standings-panel" id="standings-panel">
+            <div class="panel-section-header">
+              <div class="panel-title-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              <span class="panel-section-title">PUBLIC STANDINGS</span>
+            </div>
+
+            <!-- Standings List (2-4 players) -->
+            <div id="standings-list" class="standings-list-scroll">
+              <!-- Dynamically populated player cards -->
+            </div>
+
+            <!-- Compact Game Guide / Rules Tip -->
+            <div class="quick-tip-card">
+              <div class="tip-header">
+                <span class="tip-icon">💡</span>
+                <span class="tip-title">How Victory Works</span>
+              </div>
+              <p class="tip-body">After Round 20, the highest <strong>Financial Health Score</strong> wins. Wealth counts most, supported by liquidity, healthy debt and diversification.</p>
+            </div>
+          </aside>
+
+          <!-- C. CENTRAL BOARD AREA (Section 4.C, 5, 6, 7) -->
+          <section class="central-board-area" id="central-board-area">
+            <!-- Board Loop Level Header -->
+            <div class="board-level-banner" id="board-level-banner">
+              <div class="level-indicator-tag" id="lbl-board-level-title">
+                <span class="lvl-badge">LEVEL 1</span>
+                <span class="lvl-name">STREET INVESTOR</span>
+              </div>
+              <div class="level-unlock-chips" id="level-unlock-chips">
+                <span class="unlock-chip active">✓ Stocks & Cash</span>
+                <span class="unlock-chip locked" id="chip-unlock-bonds">🔒 Bonds (Lvl 2)</span>
+                <span class="unlock-chip locked" id="chip-unlock-realestate">🔒 Real Estate (Lvl 3)</span>
+              </div>
+            </div>
+
+            <!-- The Dynamic HTML/CSS Board Canvas -->
+            <div class="board-frame" id="board-frame">
+              <div id="game-board" class="game-board-grid">
+                <!-- Dynamically generated dark tiles with accent strips -->
+                
+                <!-- Central Market Exchange Console (Section 6) -->
+                <div class="market-exchange-center" id="market-exchange-center">
+                  <div class="exchange-inner-card">
+                    <div class="exchange-header">
+                      <span class="exchange-sub">MARKET EXCHANGE</span>
+                      <h3 class="exchange-phase-title" id="lbl-exchange-phase">ISHAN'S TURN</h3>
+                      <p class="exchange-instruction" id="lbl-exchange-instruction">ROLL TO ENTER THE MARKET</p>
+                    </div>
+
+                    <!-- Dice Display Box -->
+                    <div class="dice-roll-stage" id="dice-roll-stage">
+                      <div class="dice-container" id="dice-container">
+                        <div class="modern-die" id="die-1">
+                          <span class="die-face">3</span>
+                        </div>
+                        <div class="modern-die" id="die-2">
+                          <span class="die-face">5</span>
+                        </div>
+                      </div>
+                      <div class="dice-total-caption" id="dice-total-caption">Total: 8</div>
+                    </div>
+
+                    <!-- Market Movement Snippet / Latest Event -->
+                    <div class="exchange-pulse-feed" id="exchange-pulse-feed">
+                      <span class="pulse-icon">⚡</span>
+                      <span class="pulse-text" id="lbl-exchange-pulse">NOVA TECH ▲ 5.0% on strong volume</span>
+                    </div>
+
+                    <!-- Central Roll Button -->
+                    <div class="exchange-action-bar">
+                      <button id="btn-game-roll" class="btn btn-primary btn-roll" title="Move your token and reveal this turn's tile">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <rect x="2" y="2" width="20" height="20" rx="5" />
+                          <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
+                          <circle cx="15.5" cy="8.5" r="1.5" fill="currentColor" />
+                          <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+                          <circle cx="8.5" cy="15.5" r="1.5" fill="currentColor" />
+                          <circle cx="15.5" cy="15.5" r="1.5" fill="currentColor" />
+                        </svg>
+                        <span>ROLL DICE</span>
+                      </button>
+                      <button id="btn-game-end-turn" class="btn btn-primary btn-end-turn hidden" title="Finish your turn and pass control to the next player">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                        <span>END TURN</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- D. RIGHT PERSONAL PANEL (Section 4.D, 14) -->
+          <aside class="personal-panel" id="personal-panel">
+            <div class="panel-section-header">
+              <div class="panel-title-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+              <span class="panel-section-title">YOUR PORTFOLIO</span>
+              <span class="private-badge" title="Opponents cannot see this breakdown">🔒 Private</span>
+            </div>
+
+            <!-- Tab Switcher Navigation -->
+            <div class="panel-tabs-bar">
+              <button class="tab-btn active" data-tab="tab-portfolio">Portfolio</button>
+              <button class="tab-btn" data-tab="tab-reactions">
+                <span>Ripples</span>
+                <span class="tab-counter-badge" id="lbl-reaction-tab-count">0</span>
+              </button>
+              <button class="tab-btn" data-tab="tab-activity">Activity</button>
+              <button class="tab-btn" data-tab="tab-information">Guide</button>
+            </div>
+
+            <!-- TAB 1: PORTFOLIO & ASSET VISUALIZATION -->
+            <div class="tab-pane active" id="tab-portfolio">
+              <!-- Net Worth Banner -->
+              <div class="net-worth-hero-card">
+                <div class="nw-label-row">
+                  <span class="nw-label">TOTAL NET WORTH</span>
+                  <span class="nw-delta up" id="lbl-my-networth-delta">▲ $0 (0%)</span>
+                </div>
+                <div class="nw-value-display" id="lbl-my-networth">$1,000</div>
+                
+                <!-- Investor mastery progress -->
+                <div class="level-progress-tracker">
+                  <div class="lp-label-row">
+                    <span id="lbl-my-level-badge" class="lp-lvl-tag">LVL 1 STREET INVESTOR</span>
+                    <span id="lbl-next-threshold" class="lp-target">Progress: 0/4</span>
+                  </div>
+                  <div class="lp-bar-track">
+                    <div id="bar-net-worth" class="lp-bar-fill" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="financial-resilience-card">
+                <div class="health-score-ring">
+                  <span id="lbl-health-score">45</span>
+                  <small>/100</small>
+                </div>
+                <div class="resilience-details">
+                  <div><span>Emergency fund</span><strong id="lbl-emergency-savings">$0</strong></div>
+                  <div><span>Debt</span><strong id="lbl-debt">$0</strong></div>
+                  <div class="savings-actions">
+                    <button id="btn-save-100" class="btn btn-secondary btn-sm" title="Move $100 from cash into your emergency fund">Save $100</button>
+                    <button id="btn-withdraw-100" class="btn btn-ghost btn-sm" title="Move $100 from your emergency fund back to cash">Withdraw $100</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="social-influence-card">
+                <div class="social-influence-header">
+                  <div>
+                    <span class="influence-kicker">LIVE INFLUENCE PATTERN</span>
+                    <h4 id="lbl-influence-pattern">Pattern forming</h4>
+                  </div>
+                  <span class="private-badge">🔒 ONLY YOU</span>
+                </div>
+                <p id="lbl-influence-insight">Your private pattern develops when social-media investment claims appear.</p>
+                <div class="influence-metric">
+                  <div><span>Verification habit</span><strong id="lbl-influence-verification">50</strong></div>
+                  <div class="influence-track"><div id="bar-influence-verification" class="influence-fill verification" style="width: 50%"></div></div>
+                </div>
+                <div class="influence-metric">
+                  <div><span>Hype pull</span><strong id="lbl-influence-hype">50</strong></div>
+                  <div class="influence-track"><div id="bar-influence-hype" class="influence-fill hype" style="width: 50%"></div></div>
+                </div>
+                <div class="influence-metric">
+                  <div><span>Independent judgment</span><strong id="lbl-influence-independent">50</strong></div>
+                  <div class="influence-track"><div id="bar-influence-independent" class="influence-fill independence" style="width: 50%"></div></div>
+                </div>
+                <span id="lbl-influence-sample" class="influence-sample">No social-media decisions encountered yet</span>
+              </div>
+
+              <div class="invest-anytime-card">
+                <div class="invest-anytime-header">
+                  <div>
+                    <span class="invest-kicker">PORTFOLIO ORDER DESK</span>
+                    <h4>Invest Anytime</h4>
+                  </div>
+                  <span class="market-open-chip">● MARKET OPEN</span>
+                </div>
+                <p class="invest-anytime-copy">Buy available assets or sell current holdings whenever you choose.</p>
+                <div class="order-side-toggle" role="group" aria-label="Choose order type">
+                  <button id="btn-order-buy" class="order-side-btn active" type="button" title="Prepare a purchase order">BUY</button>
+                  <button id="btn-order-sell" class="order-side-btn" type="button" title="Prepare an order to sell an existing holding">SELL</button>
+                </div>
+                <label class="invest-field-label" for="investment-asset-select">Investment</label>
+                <select id="investment-asset-select" class="investment-select">
+                  <option value="CONS">Balanced Index Fund · Level 1</option>
+                  <option value="TECH">Nova Tech · Level 1</option>
+                  <option value="HEAL">Vitalis Health · Level 1</option>
+                  <option value="ENER">Green Grid Energy · Level 2</option>
+                  <option value="BOND">Government Bond · Level 2</option>
+                  <option value="PROP">Harbor Studio · Level 3</option>
+                </select>
+                <div class="investment-order-row">
+                  <div>
+                    <label class="invest-field-label" for="investment-quantity">Quantity</label>
+                    <input id="investment-quantity" class="investment-quantity" type="number" min="1" max="10" value="1" />
+                  </div>
+                  <div class="order-estimate">
+                    <span id="investment-estimate-label">Estimated cost</span>
+                    <strong id="investment-estimated-cost">$80</strong>
+                  </div>
+                </div>
+                <div id="investment-perk-status" class="investment-perk-status">No active research edge</div>
+                <button id="btn-invest-anytime" class="btn btn-primary btn-block" title="Execute the selected order at the displayed estimate">BUY NOW</button>
+                <p id="investment-order-note" class="investment-order-note">Level 1 assets are available now.</p>
+                <div class="insider-disclaimer">
+                  <strong>Game-only disclaimer</strong>
+                  <span>Some cards include fictional inside information to make gameplay more interesting. Trading on material non-public information is illegal in real life. Wealth Wars is educational and not financial advice.</span>
+                </div>
+              </div>
+
+              <!-- SVG Donut Chart Allocation Visualizer (Section 4.D, 14) -->
+              <div class="asset-allocation-section">
+                <div class="allocation-header">
+                  <span class="alloc-title">ASSET ALLOCATION</span>
+                </div>
+                <div class="donut-chart-wrapper">
+                  <div class="donut-svg-box">
+                    <svg viewBox="0 0 100 100" class="donut-svg" id="donut-svg-chart">
+                      <!-- Dynamic SVG Donut segments -->
+                      <circle class="donut-ring" cx="50" cy="50" r="40" fill="transparent" stroke="#16325C" stroke-width="14" />
+                      <circle class="donut-segment segment-cash" id="donut-seg-cash" cx="50" cy="50" r="40" fill="transparent" stroke="#2CCB9B" stroke-width="14" stroke-dasharray="100 151" stroke-dashoffset="0" />
+                      <circle class="donut-segment segment-stocks" id="donut-seg-stocks" cx="50" cy="50" r="40" fill="transparent" stroke="#246BFD" stroke-width="14" stroke-dasharray="0 251" stroke-dashoffset="-100" />
+                      <circle class="donut-segment segment-bonds" id="donut-seg-bonds" cx="50" cy="50" r="40" fill="transparent" stroke="#45B7E8" stroke-width="14" stroke-dasharray="0 251" stroke-dashoffset="0" />
+                      <circle class="donut-segment segment-property" id="donut-seg-property" cx="50" cy="50" r="40" fill="transparent" stroke="#F4B942" stroke-width="14" stroke-dasharray="0 251" stroke-dashoffset="0" />
+                    </svg>
+                    <div class="donut-center-label">
+                      <span class="donut-center-title">CASH</span>
+                      <span class="donut-center-val" id="lbl-donut-cash-pct">100%</span>
+                    </div>
+                  </div>
+                  
+                  <div class="donut-legend-grid">
+                    <div class="legend-item">
+                      <span class="legend-dot dot-cash"></span>
+                      <span class="legend-name">Cash</span>
+                      <span class="legend-pct" id="lbl-pct-cash">100%</span>
+                    </div>
+                    <div class="legend-item">
+                      <span class="legend-dot dot-stocks"></span>
+                      <span class="legend-name">Stocks</span>
+                      <span class="legend-pct" id="lbl-pct-stocks">0%</span>
+                    </div>
+                    <div class="legend-item">
+                      <span class="legend-dot dot-bonds"></span>
+                      <span class="legend-name">Bonds</span>
+                      <span class="legend-pct" id="lbl-pct-bonds">0%</span>
+                    </div>
+                    <div class="legend-item">
+                      <span class="legend-dot dot-property"></span>
+                      <span class="legend-name">Real Estate</span>
+                      <span class="legend-pct" id="lbl-pct-property">0%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Asset Detail Lists -->
+              <div class="asset-details-list">
+                <!-- Cash Row -->
+                <div class="asset-holding-card">
+                  <div class="asset-icon-box cash-box">💵</div>
+                  <div class="asset-holding-meta">
+                    <span class="asset-holding-name">Liquid Cash</span>
+                    <span class="asset-holding-sub">Available for transactions</span>
+                  </div>
+                  <div class="asset-holding-value" id="lbl-my-cash">$1,000</div>
+                </div>
+
+                <!-- Stocks Grid -->
+                <div class="stocks-breakdown-card">
+                  <div class="stocks-breakdown-header">
+                    <span class="sub-header-title">MARKET INVESTMENTS</span>
+                    <span class="sub-header-val" id="lbl-total-stocks-val">$0</span>
+                  </div>
+                  <div class="stocks-rows-grid">
+                    <div class="stock-item-row" id="row-holding-TECH">
+                      <span class="stock-badge">TECH</span>
+                      <span class="stock-shares" id="val-shares-TECH">0 shares</span>
+                      <span class="stock-position-value"><span class="stock-val" id="val-holdings-TECH">$0</span><span class="stock-return flat" id="val-return-TECH">—</span></span>
+                    </div>
+                    <div class="stock-item-row" id="row-holding-CONS">
+                      <span class="stock-badge">FUND</span>
+                      <span class="stock-shares" id="val-shares-CONS">0 shares</span>
+                      <span class="stock-position-value"><span class="stock-val" id="val-holdings-CONS">$0</span><span class="stock-return flat" id="val-return-CONS">—</span></span>
+                    </div>
+                    <div class="stock-item-row" id="row-holding-HEAL">
+                      <span class="stock-badge">HEAL</span>
+                      <span class="stock-shares" id="val-shares-HEAL">0 shares</span>
+                      <span class="stock-position-value"><span class="stock-val" id="val-holdings-HEAL">$0</span><span class="stock-return flat" id="val-return-HEAL">—</span></span>
+                    </div>
+                    <div class="stock-item-row" id="row-holding-ENER">
+                      <span class="stock-badge">ENER</span>
+                      <span class="stock-shares" id="val-shares-ENER">0 shares</span>
+                      <span class="stock-position-value"><span class="stock-val" id="val-holdings-ENER">$0</span><span class="stock-return flat" id="val-return-ENER">—</span></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Bonds List -->
+                <div class="bonds-breakdown-card">
+                  <div class="bonds-breakdown-header">
+                    <span class="sub-header-title">FIXED INCOME BONDS</span>
+                    <span class="sub-header-val" id="lbl-total-bonds-val">$0</span>
+                  </div>
+                  <div id="bonds-list" class="bonds-list-items">
+                    <p class="empty-list-note">No active bonds. Purchase government bonds at Level 2.</p>
+                  </div>
+                </div>
+
+                <!-- Real Estate Holdings -->
+                <div class="property-breakdown-card">
+                  <div class="property-breakdown-header">
+                    <span class="sub-header-title">REAL ESTATE PROPERTIES</span>
+                    <span class="sub-header-val" id="lbl-property-progress-count">0 owned</span>
+                  </div>
+                  <div id="properties-list" class="property-list-items">
+                    <p class="empty-list-note">No property yet. Level 3 property adds income but also maintenance.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 2: FINANCIAL RIPPLE TIMELINE -->
+            <div class="tab-pane" id="tab-reactions">
+              <div class="reactions-tab-header">
+                <h4>Future Commitments</h4>
+                <p>Payments and rewards created by earlier decisions appear here before they affect you.</p>
+              </div>
+              <div id="reactions-container" class="reactions-cards-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- TAB 3: ACTIVITY FEED (Section 18) -->
+            <div class="tab-pane" id="tab-activity">
+              <div class="activity-tab-header">
+                <h4>Market & Board Activity</h4>
+              </div>
+              <div id="logs-container" class="activity-feed-scroller">
+                <!-- Dynamically populated activity logs -->
+              </div>
+            </div>
+
+            <!-- TAB 4: GAME GUIDE & SEARCHABLE GLOSSARY -->
+            <div class="tab-pane" id="tab-information">
+              <div id="information-tab-content" class="guide-surface guide-surface-compact"></div>
+            </div>
+          </aside>
+        </main>
+
+        <div class="reaction-cards-tray-container hidden" id="reaction-cards-tray">
+          <div class="tray-inner" id="reaction-tray-cards-wrapper">
+            <!-- Dynamically populated reaction cards with overlapping styling -->
+          </div>
+        </div>
+
+        <!-- RIGHT-SIDE ACTION DRAWER (Section 8.2, 9.2) -->
+        <div class="action-drawer-overlay" id="action-drawer-overlay">
+          <div class="action-drawer-panel" id="action-drawer-panel">
+            <div class="drawer-header">
+              <div class="drawer-badge" id="drawer-action-badge">INVESTMENT OFFER</div>
+              <button id="btn-drawer-close" class="drawer-close-btn" title="Close drawer">✕</button>
+            </div>
+
+            <!-- Drawer Dynamic Content Formats -->
+            <div class="drawer-body" id="drawer-body-content">
+              <!-- Rendered dynamically for Investment Buy, Sell, or Insider Memo -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CENTER MODALS (Section 9.3, 10) -->
+
+      <!-- 1. GLOBAL EVENT MODAL -->
+      <div id="modal-event" class="center-modal-overlay">
+        <div class="event-card-container">
+          <div class="event-card-inner" id="event-card-element">
+            <div class="event-card-header">
+              <div class="event-badge">GLOBAL EVENT</div>
+              <div class="event-icon" id="event-icon-badge">⚡</div>
+            </div>
+            <h2 class="event-title" id="lbl-event-title">RECESSION</h2>
+            <p class="event-description" id="lbl-event-description">Investor confidence collapses. All stocks lose 10%.</p>
+            <div class="event-impact-badge" id="lbl-event-impact">Impact: -10% across all equity markets</div>
+            <div class="event-footer">
+              <button id="btn-event-continue" class="btn btn-primary btn-block">CONTINUE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. TRADE NEGOTIATION MODAL (Section 10) -->
+      <div id="modal-trade" class="center-modal-overlay">
+        <div class="trade-modal-window">
+          <div class="trade-modal-header">
+            <div class="trade-title-row">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />
+              </svg>
+              <h3>Trade Negotiation</h3>
+            </div>
+            <div class="trade-partner-select-wrap">
+              <label for="trade-select-player">Select Counterparty:</label>
+              <select id="trade-select-player" class="trade-select">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+          </div>
+
+          <div class="trade-two-column-grid">
+            <!-- Left: You Offer -->
+            <div class="trade-column offer-column">
+              <div class="column-title">
+                <span class="col-indicator">↑</span>
+                <span>YOUR OFFER</span>
+              </div>
+              <div class="trade-input-group">
+                <label for="trade-offer-cash">Cash ($)</label>
+                <input type="number" id="trade-offer-cash" min="0" value="0" step="50" />
+              </div>
+              <div class="trade-stocks-group">
+                <span class="group-label">Stock Shares</span>
+                <div class="trade-stock-inputs">
+                  <div class="stock-qty-input"><span class="sym">TECH</span><input type="number" id="trade-offer-TECH" min="0" value="0" /></div>
+                  <div class="stock-qty-input"><span class="sym">CONS</span><input type="number" id="trade-offer-CONS" min="0" value="0" /></div>
+                  <div class="stock-qty-input"><span class="sym">HEAL</span><input type="number" id="trade-offer-HEAL" min="0" value="0" /></div>
+                  <div class="stock-qty-input"><span class="sym">ENER</span><input type="number" id="trade-offer-ENER" min="0" value="0" /></div>
+                </div>
+              </div>
+              <div class="trade-locked-note">
+                <span>🔒 Real Estate cannot be traded.</span>
+              </div>
+              <div class="trade-col-total">
+                <span>Est. Value Offered:</span>
+                <strong id="val-trade-offer-total">$0</strong>
+              </div>
+            </div>
+
+            <!-- Right: You Request -->
+            <div class="trade-column request-column">
+              <div class="column-title">
+                <span class="col-indicator">↓</span>
+                <span>YOU REQUEST</span>
+              </div>
+              <div class="trade-input-group">
+                <label for="trade-request-cash">Cash ($)</label>
+                <input type="number" id="trade-request-cash" min="0" value="0" step="50" />
+              </div>
+              <div class="trade-stocks-group">
+                <span class="group-label">Stock Shares</span>
+                <div class="trade-stock-inputs">
+                  <div class="stock-qty-input"><span class="sym">TECH</span><input type="number" id="trade-request-TECH" min="0" value="0" /></div>
+                  <div class="stock-qty-input"><span class="sym">CONS</span><input type="number" id="trade-request-CONS" min="0" value="0" /></div>
+                  <div class="stock-qty-input"><span class="sym">HEAL</span><input type="number" id="trade-request-HEAL" min="0" value="0" /></div>
+                  <div class="stock-qty-input"><span class="sym">ENER</span><input type="number" id="trade-request-ENER" min="0" value="0" /></div>
+                </div>
+              </div>
+              <div class="trade-locked-note">
+                <span>🔒 Real Estate cannot be traded.</span>
+              </div>
+              <div class="trade-col-total">
+                <span>Est. Value Requested:</span>
+                <strong id="val-trade-request-total">$0</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="trade-modal-footer">
+            <button id="btn-trade-cancel" class="btn btn-ghost">Cancel</button>
+            <button id="btn-trade-submit" class="btn btn-primary">
+              <span>SEND PROPOSAL</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. JACKPOT REVEAL MODAL (Section 11) -->
+      <div id="modal-jackpot" class="center-modal-overlay">
+        <div class="jackpot-modal-card">
+          <div class="jackpot-glow-effect"></div>
+          <div class="jackpot-vault-icon">💰</div>
+          <div class="jackpot-badge">JACKPOT VAULT UNLOCKED</div>
+          <h2 class="jackpot-title">Claim Your Bounty</h2>
+          <p class="jackpot-subtitle">Choose one high-value executive reward:</p>
+
+          <div class="jackpot-choices-grid">
+            <button id="btn-jackpot-cash" class="jackpot-choice-card">
+              <div class="choice-icon">💵</div>
+              <div class="choice-title">Take Cash Payout</div>
+              <div class="choice-value" id="lbl-jackpot-cash-val">+$300 Instant Cash</div>
+              <span class="choice-action-text">Select Cash</span>
+            </button>
+
+            <div class="jackpot-choice-card stock-choice-card">
+              <div class="choice-icon">📈</div>
+              <div class="choice-title">Free Stock Share</div>
+              <div class="choice-select-wrap">
+                <select id="jackpot-stock-select" class="jackpot-stock-dropdown">
+                  <option value="TECH">1x NOVA TECH</option>
+                  <option value="CONS">1x CONS GOODS</option>
+                  <option value="HEAL">1x VITALIS HEAL</option>
+                  <option value="ENER">1x ENERGY INDEX</option>
+                </select>
+              </div>
+              <button id="btn-jackpot-stock" class="btn btn-gold btn-block">Claim Free Share</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. LEVEL-UP CELEBRATION MODAL (Section 11) -->
+      <div id="modal-level-up" class="center-modal-overlay">
+        <div class="level-up-modal-card">
+          <div class="level-up-ring-animation">
+            <div class="ring-circle"></div>
+            <div class="ring-icon" id="lbl-levelup-icon">🏛️</div>
+          </div>
+          <div class="levelup-badge" id="lbl-levelup-badge">LEVEL ADVANCEMENT UNLOCKED</div>
+          <h2 class="levelup-title" id="lbl-levelup-name">PORTFOLIO MANAGER</h2>
+          <p class="levelup-desc" id="lbl-levelup-unlock-text">Government Bonds and higher yield transactions are now available.</p>
+          
+          <div class="levelup-notice">
+            <span>Advancing teleports your token to Start on the outer track with upgraded rewards.</span>
+          </div>
+
+          <div class="levelup-actions">
+            <button id="btn-level-up-yes" class="btn btn-primary btn-lg">
+              <span>YES, ADVANCE TO NEXT LOOP</span>
+            </button>
+            <button id="btn-level-up-no" class="btn btn-ghost">
+              <span>Stay On Current Loop</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. FINAL RESULTS / WINNER MODAL (Section 17) -->
+      <div id="modal-game-over" class="center-modal-overlay">
+        <div class="game-over-modal-card">
+          <div class="empire-trophy">🏆</div>
+          <div class="game-over-badge">STRONGEST FINANCIAL HEALTH</div>
+          <h2 class="winner-name-display" id="lbl-winner-name">ISHAN</h2>
+          <div class="winner-networth" id="lbl-winner-networth">82 / 100</div>
+          <p class="winner-caption" id="lbl-winner-caption">Balanced wealth growth with resilience.</p>
+
+          <div class="final-standings-table">
+            <div class="table-header-row">
+              <span>RANK</span>
+              <span>EXECUTIVE</span>
+              <span>HEALTH</span>
+              <span>NET WORTH</span>
+            </div>
+            <div id="final-standings-body" class="table-body">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <div class="game-over-actions">
+            <button id="btn-play-again" class="btn btn-primary btn-lg">RETURN TO LOBBY</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DECISION REVIEW MODAL -->
+      <div id="modal-decision-feedback" class="center-modal-overlay">
+        <div class="decision-feedback-card" id="decision-feedback-card">
+          <span id="decision-feedback-outcome" class="decision-feedback-outcome">DECISION REVIEW</span>
+          <h3 id="decision-feedback-title">Your choice has been reviewed</h3>
+          <div id="decision-feedback-bias" class="decision-feedback-bias hidden"></div>
+          <p id="decision-feedback-explanation"></p>
+          <div class="decision-feedback-impact">
+            <span>GAME IMPACT</span>
+            <strong id="decision-feedback-impact">—</strong>
+          </div>
+          <button id="btn-decision-feedback-continue" class="btn btn-primary btn-block">CONTINUE</button>
+        </div>
+      </div>
+
+      <!-- 6. GENERIC / INCOMING TRADE RESPONSE MODAL -->
+      <div id="modal-generic" class="center-modal-overlay">
+        <div class="generic-modal-card" id="generic-modal-card">
+          <h3 id="lbl-generic-title">Trade Proposal Received</h3>
+          <div id="lbl-generic-body" class="generic-modal-body">
+            <!-- Dynamic Trade offer description -->
+          </div>
+          <div class="generic-modal-actions" id="generic-modal-actions">
+            <button id="btn-generic-primary" class="btn btn-primary">Accept</button>
+            <button id="btn-generic-secondary" class="btn btn-secondary">Reject</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALWAYS-AVAILABLE GAME GUIDE -->
+      <div id="modal-game-guide" class="center-modal-overlay guide-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="game-guide-title">
+        <div class="game-guide-modal-card">
+          <div class="game-guide-modal-header">
+            <div>
+              <span class="guide-kicker">PLAYER HANDBOOK</span>
+              <h2 id="game-guide-title">Understand Wealth Wars</h2>
+            </div>
+            <button id="btn-guide-close" class="drawer-close-btn" type="button" aria-label="Close game guide">✕</button>
+          </div>
+          <div id="guide-modal-content" class="guide-surface"></div>
+        </div>
+      </div>
+
+      <!-- TOP-RIGHT NOTIFICATION TOASTS CONTAINER (Section 9.1, 10) -->
+      <div class="toast-notifications-container" id="toast-container">
+        <!-- Toast items slide in here dynamically -->
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
